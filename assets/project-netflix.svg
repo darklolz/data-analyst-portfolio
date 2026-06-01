@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
+  <title id="title">Netflix Data Analysis Placeholder</title>
+  <desc id="desc">Exploratory data analysis chart preview.</desc>
+  <rect width="960" height="600" fill="#071426"/>
+  <rect x="58" y="54" width="844" height="492" rx="20" fill="#0d1f38" stroke="#24415f"/>
+  <text x="92" y="116" fill="#eaf6ff" font-family="Inter, Arial" font-size="34" font-weight="700">Netflix Data Analysis</text>
+  <circle cx="270" cy="320" r="132" fill="none" stroke="#22d3ee" stroke-width="42"/>
+  <path d="M270 188a132 132 0 0 1 113 200" fill="none" stroke="#8b5cf6" stroke-width="42"/>
+  <path d="M383 388a132 132 0 0 1-210 22" fill="none" stroke="#34d399" stroke-width="42"/>
+  <g transform="translate(520 185)">
+    <rect width="270" height="34" rx="10" fill="#122a49"/>
+    <rect width="210" height="34" rx="10" fill="#22d3ee"/>
+    <rect y="72" width="270" height="34" rx="10" fill="#122a49"/>
+    <rect y="72" width="172" height="34" rx="10" fill="#8b5cf6"/>
+    <rect y="144" width="270" height="34" rx="10" fill="#122a49"/>
+    <rect y="144" width="235" height="34" rx="10" fill="#34d399"/>
+    <rect y="216" width="270" height="34" rx="10" fill="#122a49"/>
+    <rect y="216" width="124" height="34" rx="10" fill="#38bdf8"/>
+  </g>
+</svg>
