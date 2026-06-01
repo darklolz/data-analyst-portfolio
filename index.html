@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Abhishek Khandwal - Data Analyst portfolio showcasing SQL, Python, Excel, Power BI, statistics, dashboards, and business analytics projects.">
+  <meta name="keywords" content="Abhishek Khandwal, Data Analyst, SQL, Python, Excel, Power BI, Pandas, NumPy, Statistics, Portfolio">
+  <meta name="author" content="Abhishek Khandwal">
+  <meta property="og:title" content="Abhishek Khandwal | Data Analyst Portfolio">
+  <meta property="og:description" content="Transforming data into actionable business insights through SQL, Python, Excel, Power BI, and statistics.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#06111f">
+  <title>Abhishek Khandwal | Data Analyst Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="loader" id="loader" aria-label="Loading portfolio">
+    <div class="loader-ring"></div>
+    <p>Loading insights...</p>
+  </div>
+
+  <header class="site-header" id="siteHeader">
+    <nav class="nav" aria-label="Primary navigation">
+      <a href="#home" class="brand" aria-label="Abhishek Khandwal home">
+        <span class="brand-mark">AK</span>
+        <span>Abhishek Khandwal</span>
+      </a>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#statistics">Statistics</a></li>
+        <li><a href="#certifications">Certifications</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero section" id="home">
+      <canvas class="data-canvas" id="dataCanvas" aria-hidden="true"></canvas>
+      <div class="hero-grid">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">Premium Data Analyst Portfolio</p>
+          <h1>Abhishek Khandwal</h1>
+          <h2>Data Analyst | SQL | Python | Excel | Power BI</h2>
+          <p class="hero-tagline">Transforming Data Into Actionable Business Insights</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#projects">View Projects</a>
+            <a class="btn btn-secondary" href="assets/Abhishek-Khandwal-Resume.pdf" download>Download Resume</a>
+            <a class="btn btn-ghost" href="#contact">Contact Me</a>
+          </div>
+          <div class="hero-metrics" aria-label="Portfolio highlights">
+            <div>
+              <strong class="counter" data-target="12">0</strong>
+              <span>Projects Practiced</span>
+            </div>
+            <div>
+              <strong class="counter" data-target="8">0</strong>
+              <span>Core Tools</span>
+            </div>
+            <div>
+              <strong class="counter" data-target="95">0</strong>
+              <span>Insight Focus</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-card glass reveal">
+          <div class="dashboard-top">
+            <div>
+              <span class="muted">Revenue Intelligence</span>
+              <h3>Executive KPI Overview</h3>
+            </div>
+            <span class="status-pill">Live</span>
+          </div>
+          <div class="kpi-grid">
+            <article>
+              <span>Total Revenue</span>
+              <strong>$2.4M</strong>
+              <em>+18.5%</em>
+            </article>
+            <article>
+              <span>Retention</span>
+              <strong>86%</strong>
+              <em>+7.2%</em>
+            </article>
+          </div>
+          <div class="chart-bars" aria-hidden="true">
+            <span style="--h: 42%"></span>
+            <span style="--h: 68%"></span>
+            <span style="--h: 55%"></span>
+            <span style="--h: 82%"></span>
+            <span style="--h: 74%"></span>
+            <span style="--h: 91%"></span>
+            <span style="--h: 63%"></span>
+          </div>
+          <div class="trend-line" aria-hidden="true">
+            <svg viewBox="0 0 420 120" role="img" aria-label="Rising analytics trend line">
+              <polyline points="0,90 60,72 120,80 180,44 240,52 300,26 360,36 420,10"></polyline>
+              <circle cx="420" cy="10" r="6"></circle>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section about" id="about">
+      <div class="section-heading reveal">
+        <p class="eyebrow">About Me</p>
+        <h2>Analytical mindset. Business-first storytelling.</h2>
+      </div>
+      <div class="about-grid">
+        <article class="about-card glass reveal">
+          <p>I am an aspiring Data Analyst with skills in SQL, Python, Excel, Statistics, Pandas, NumPy, and Power BI. I enjoy transforming raw data into meaningful insights that help businesses make data-driven decisions. I continuously improve my analytical and problem-solving abilities through hands-on projects and practical learning.</p>
+        </article>
+        <div class="profile-highlights reveal">
+          <article>
+            <span>Experience Level</span>
+            <strong>Aspiring Data Analyst</strong>
+            <p>Focused on practical projects, data cleaning, reporting, and business insights.</p>
+          </article>
+          <article>
+            <span>Skills Summary</span>
+            <strong>SQL, Python, Excel, Power BI</strong>
+            <p>Comfortable with analysis, dashboards, statistical thinking, and storytelling.</p>
+          </article>
+          <article>
+            <span>Career Objective</span>
+            <strong>Business Impact Through Data</strong>
+            <p>To help teams make smarter, faster decisions using reliable analysis.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section skills" id="skills">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Skills</p>
+        <h2>Technical toolkit for insight-driven analytics.</h2>
+      </div>
+      <div class="skills-grid">
+        <article class="skill-card glass reveal" data-percent="88">
+          <div class="skill-icon">DA</div>
+          <h3>Data Analysis</h3>
+          <p>Data cleaning, visualization, interpretation, statistical analysis.</p>
+          <div class="progress"><span></span></div>
+          <strong>88%</strong>
+        </article>
+        <article class="skill-card glass reveal" data-percent="84">
+          <div class="skill-icon">PY</div>
+          <h3>Programming</h3>
+          <p>Python, Pandas, NumPy, exploratory workflows, reusable notebooks.</p>
+          <div class="progress"><span></span></div>
+          <strong>84%</strong>
+        </article>
+        <article class="skill-card glass reveal" data-percent="86">
+          <div class="skill-icon">DB</div>
+          <h3>Databases</h3>
+          <p>SQL, MySQL, joins, aggregations, window functions, business queries.</p>
+          <div class="progress"><span></span></div>
+          <strong>86%</strong>
+        </article>
+        <article class="skill-card glass reveal" data-percent="90">
+          <div class="skill-icon">BI</div>
+          <h3>Visualization</h3>
+          <p>Power BI, Excel Dashboards, KPI reporting, dashboard storytelling.</p>
+          <div class="progress"><span></span></div>
+          <strong>90%</strong>
+        </article>
+        <article class="skill-card glass reveal" data-percent="82">
+          <div class="skill-icon">ST</div>
+          <h3>Statistics</h3>
+          <p>Probability, hypothesis testing, descriptive statistics, correlation.</p>
+          <div class="progress"><span></span></div>
+          <strong>82%</strong>
+        </article>
+        <article class="skill-card glass reveal" data-percent="87">
+          <div class="skill-icon">DS</div>
+          <h3>Data Storytelling</h3>
+          <p>Clear narratives, recommendations, executive summaries, decision support.</p>
+          <div class="progress"><span></span></div>
+          <strong>87%</strong>
+        </article>
+      </div>
+    </section>
+
+    <section class="section projects" id="projects">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Projects</p>
+        <h2>Recruiter-ready analytics case studies.</h2>
+      </div>
+
+      <div class="filter-bar reveal" aria-label="Project filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="powerbi">Power BI</button>
+        <button class="filter-btn" data-filter="python">Python</button>
+        <button class="filter-btn" data-filter="sql">SQL</button>
+      </div>
+
+      <div class="projects-grid">
+        <article class="project-card glass reveal" data-category="powerbi">
+          <img src="assets/project-sales.svg" alt="Sales Analysis Dashboard preview">
+          <div class="project-body">
+            <span class="project-type">Dashboard Analytics</span>
+            <h3>Sales Analysis Dashboard</h3>
+            <p>Analyzed sales trends, customer behavior, and revenue patterns using Excel and Power BI.</p>
+            <div class="tags"><span>Excel</span><span>Power BI</span></div>
+            <div class="project-actions">
+              <a href="#" aria-label="Sales Analysis Dashboard GitHub">GitHub</a>
+              <a href="#" aria-label="Sales Analysis Dashboard live demo">Live Demo</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card glass reveal" data-category="python">
+          <img src="assets/project-netflix.svg" alt="Netflix Data Analysis preview">
+          <div class="project-body">
+            <span class="project-type">Exploratory Data Analysis</span>
+            <h3>Netflix Data Analysis</h3>
+            <p>Performed exploratory data analysis on Netflix datasets using Python, Pandas, and Matplotlib.</p>
+            <div class="tags"><span>Python</span><span>Pandas</span><span>NumPy</span></div>
+            <div class="project-actions">
+              <a href="#" aria-label="Netflix Data Analysis GitHub">GitHub</a>
+              <a href="#" aria-label="Netflix Data Analysis live demo">Live Demo</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card glass reveal" data-category="python sql">
+          <img src="assets/project-churn.svg" alt="Customer Churn Analysis preview">
+          <div class="project-body">
+            <span class="project-type">Retention Analytics</span>
+            <h3>Customer Churn Analysis</h3>
+            <p>Identified customer retention patterns and business recommendations using statistical techniques.</p>
+            <div class="tags"><span>Python</span><span>Statistics</span><span>SQL</span></div>
+            <div class="project-actions">
+              <a href="#" aria-label="Customer Churn Analysis GitHub">GitHub</a>
+              <a href="#" aria-label="Customer Churn Analysis live demo">Live Demo</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card glass reveal" data-category="sql">
+          <img src="assets/project-sql.svg" alt="SQL Business Insights Project preview">
+          <div class="project-body">
+            <span class="project-type">Business Intelligence</span>
+            <h3>SQL Business Insights Project</h3>
+            <p>Solved real-world business questions using advanced SQL queries including joins, aggregations, and window functions.</p>
+            <div class="tags"><span>SQL</span><span>MySQL</span><span>Window Functions</span></div>
+            <div class="project-actions">
+              <a href="#" aria-label="SQL Business Insights Project GitHub">GitHub</a>
+              <a href="#" aria-label="SQL Business Insights Project live demo">Live Demo</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section stats-section" id="statistics">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Statistics Expertise</p>
+        <h2>Turning uncertainty into confident decisions.</h2>
+      </div>
+      <div class="stats-infographic">
+        <article class="stat-tile reveal"><strong>Mean</strong><span>Average performance baseline</span></article>
+        <article class="stat-tile reveal"><strong>Median</strong><span>Robust central tendency</span></article>
+        <article class="stat-tile reveal"><strong>Mode</strong><span>Most frequent category</span></article>
+        <article class="stat-tile reveal"><strong>Standard Deviation</strong><span>Spread and volatility</span></article>
+        <article class="stat-tile reveal"><strong>Probability</strong><span>Chance-based reasoning</span></article>
+        <article class="stat-tile reveal"><strong>Bayes Theorem</strong><span>Updated belief from evidence</span></article>
+        <article class="stat-tile reveal"><strong>Hypothesis Testing</strong><span>Validate business assumptions</span></article>
+        <article class="stat-tile reveal"><strong>Correlation Analysis</strong><span>Relationship discovery</span></article>
+        <article class="stat-tile reveal"><strong>Data Visualization</strong><span>Communicate patterns clearly</span></article>
+      </div>
+    </section>
+
+    <section class="section certifications" id="certifications">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Certifications</p>
+        <h2>Continuous learning credentials.</h2>
+      </div>
+      <div class="cert-grid">
+        <article class="cert-card glass reveal">
+          <span>Certification Name</span>
+          <h3>Data Analytics Professional Certificate</h3>
+          <p>Issuing Organization: Placeholder Organization</p>
+          <p>Date: 2026</p>
+          <a href="#">Certificate Link</a>
+        </article>
+        <article class="cert-card glass reveal">
+          <span>Certification Name</span>
+          <h3>SQL for Business Analytics</h3>
+          <p>Issuing Organization: Placeholder Organization</p>
+          <p>Date: 2026</p>
+          <a href="#">Certificate Link</a>
+        </article>
+        <article class="cert-card glass reveal">
+          <span>Certification Name</span>
+          <h3>Power BI Dashboard Design</h3>
+          <p>Issuing Organization: Placeholder Organization</p>
+          <p>Date: 2026</p>
+          <a href="#">Certificate Link</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="section resume" id="resume">
+      <div class="resume-card glass reveal">
+        <div>
+          <p class="eyebrow">Resume</p>
+          <h2>Download a concise analyst resume.</h2>
+          <p>Replace the placeholder PDF with your final resume and keep the same file name for the button to work automatically.</p>
+          <a class="btn btn-primary" href="assets/Abhishek-Khandwal-Resume.pdf" download>Download Resume</a>
+        </div>
+        <div class="resume-preview" aria-label="Resume preview card">
+          <span>Resume Preview</span>
+          <h3>Abhishek Khandwal</h3>
+          <p>Data Analyst | SQL | Python | Excel | Power BI</p>
+          <ul>
+            <li>Analytics Projects</li>
+            <li>Dashboard Reporting</li>
+            <li>Statistical Thinking</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section contact" id="contact">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Contact</p>
+        <h2>Let’s discuss data, dashboards, and business impact.</h2>
+      </div>
+      <div class="contact-grid">
+        <form class="contact-form glass reveal" id="contactForm">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" placeholder="Your name" required>
+
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
+
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="5" placeholder="Tell me about the opportunity..." required></textarea>
+
+          <button class="btn btn-primary" type="submit">Send Message</button>
+          <p class="form-status" id="formStatus" role="status"></p>
+        </form>
+
+        <aside class="contact-panel reveal">
+          <a class="contact-link glass" href="mailto:abhishek@example.com">
+            <span>@</span>
+            <div><strong>Email</strong><small>abhishek@example.com</small></div>
+          </a>
+          <a class="contact-link glass" href="https://github.com/" target="_blank" rel="noopener">
+            <span>GH</span>
+            <div><strong>GitHub</strong><small>github.com/your-username</small></div>
+          </a>
+          <a class="contact-link glass" href="https://www.linkedin.com/" target="_blank" rel="noopener">
+            <span>in</span>
+            <div><strong>LinkedIn</strong><small>linkedin.com/in/your-profile</small></div>
+          </a>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div>
+      <strong>Abhishek Khandwal</strong>
+      <p>Data Analyst Portfolio</p>
+    </div>
+    <p>Copyright 2026</p>
+    <div class="footer-links">
+      <a href="mailto:abhishek@example.com">Email</a>
+      <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
