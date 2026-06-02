@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Performance — Data Analysis Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+<style>
+  :root {
+    --bg:       #0b0f1a;
+    --surface:  #121929;
+    --card:     #19213b;
+    --border:   #243050;
+    --gold:     #f0a500;
+    --gold-dim: #b87d00;
+    --blue:     #4b8fff;
+    --green:    #3ecf6e;
+    --red:      #f05a5a;
+    --purple:   #a78bfa;
+    --text:     #dde4f0;
+    --muted:    #7a8aaa;
+    --radius:   14px;
+  }
+  *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  /* ── Grain overlay ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+    opacity: 0.5;
+  }
+
+  /* ── Layout ── */
+  .wrapper { max-width: 1340px; margin: 0 auto; padding: 0 28px 80px; position: relative; z-index: 1; }
+
+  /* ── Header ── */
+  header {
+    padding: 60px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 52px;
+  }
+  .header-tag {
+    display: inline-block;
+    background: rgba(240,165,0,.12);
+    border: 1px solid rgba(240,165,0,.3);
+    color: var(--gold);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 50px;
+    margin-bottom: 20px;
+  }
+  header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 6vw, 80px);
+    line-height: 1;
+    letter-spacing: 1px;
+    color: #fff;
+  }
+  header h1 span { color: var(--gold); }
+  header p {
+    margin-top: 16px;
+    color: var(--muted);
+    max-width: 600px;
+    font-size: 15px;
+  }
+  .header-meta {
+    display: flex; gap: 28px; margin-top: 28px; flex-wrap: wrap;
+  }
+  .header-meta span {
+    font-size: 12px; color: var(--muted); letter-spacing: .5px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .header-meta span::before {
+    content:''; width:6px; height:6px; border-radius:50%;
+    background: var(--gold); flex-shrink:0;
+  }
+
+  /* ── Section ── */
+  section { margin-bottom: 64px; }
+  .section-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 1.5px;
+    color: var(--text);
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 28px;
+  }
+  .section-label::after {
+    content:''; flex:1; height:1px; background: var(--border);
+  }
+  .section-num {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    color: var(--gold); font-family: 'DM Mono', monospace;
+  }
+
+  /* ── KPI Cards ── */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; }
+  .kpi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 26px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color .25s, transform .25s;
+  }
+  .kpi-card:hover { border-color: var(--gold-dim); transform: translateY(-2px); }
+  .kpi-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background: var(--accent-color, var(--gold));
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+  .kpi-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
+  }
+  .kpi-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px; line-height:1; color: #fff;
+    letter-spacing: 1px;
+  }
+  .kpi-sub { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .kpi-badge {
+    display: inline-block; margin-top: 6px;
+    padding: 3px 10px; border-radius: 50px; font-size: 11px; font-weight:600;
+  }
+  .badge-up { background: rgba(62,207,110,.12); color: var(--green); }
+  .badge-down { background: rgba(240,90,90,.12); color: var(--red); }
+  .badge-neutral { background: rgba(75,143,255,.12); color: var(--blue); }
+
+  /* ── Chart Grid ── */
+  .chart-grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(480px, 1fr)); gap: 22px; }
+  .chart-grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 22px; }
+  .chart-grid-full { display: grid; grid-template-columns: 1fr; gap: 22px; }
+
+  .chart-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 28px 24px;
+    transition: border-color .25s;
+  }
+  .chart-card:hover { border-color: #2d3f6a; }
+  .chart-title {
+    font-weight: 600; font-size: 14px; color: var(--text);
+    margin-bottom: 4px;
+  }
+  .chart-subtitle {
+    font-size: 12px; color: var(--muted); margin-bottom: 20px;
+  }
+  .chart-wrap { position: relative; }
+
+  /* ── Insights ── */
+  .insight-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+  .insight-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 22px 22px;
+    display: flex; gap: 16px; align-items: flex-start;
+    transition: border-color .25s, transform .25s;
+  }
+  .insight-card:hover { border-color: var(--gold-dim); transform: translateY(-2px); }
+  .insight-icon {
+    font-size: 24px; flex-shrink:0; width:44px; height:44px;
+    display:flex; align-items:center; justify-content:center;
+    background: rgba(240,165,0,.1); border-radius: 10px;
+  }
+  .insight-body h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .insight-body p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .insight-body strong { color: var(--gold); }
+
+  /* ── Data Table ── */
+  .table-wrap { overflow-x: auto; margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { border-bottom: 2px solid var(--border); }
+  tbody tr { border-bottom: 1px solid rgba(36,48,80,.6); transition: background .15s; }
+  tbody tr:hover { background: rgba(255,255,255,.03); }
+  th { padding: 10px 14px; color: var(--muted); text-align: left; font-size: 11px; font-weight:600; letter-spacing: 1.5px; text-transform: uppercase; }
+  td { padding: 11px 14px; }
+  .bar-cell { display: flex; align-items:center; gap: 10px; }
+  .mini-bar { height:8px; border-radius:4px; background: var(--gold); min-width:4px; transition: width .6s ease; }
+  .pass-pill {
+    padding: 3px 10px; border-radius:50px; font-size:11px; font-weight:600;
+    display:inline-block;
+  }
+
+  /* ── Correlation bar ── */
+  .corr-row { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+  .corr-label { width:160px; font-size:13px; color:var(--muted); flex-shrink:0; }
+  .corr-track { flex:1; height:10px; background:rgba(255,255,255,.06); border-radius:5px; overflow:hidden; }
+  .corr-fill { height:100%; border-radius:5px; transition: width .8s ease; }
+  .corr-val { font-family:'DM Mono',monospace; font-size:12px; width:50px; text-align:right; flex-shrink:0; }
+
+  /* ── Footer ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0;
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(24px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .anim { animation: fadeUp .5s ease both; }
+  .anim-d1 { animation-delay:.05s; }
+  .anim-d2 { animation-delay:.12s; }
+  .anim-d3 { animation-delay:.19s; }
+  .anim-d4 { animation-delay:.26s; }
+  .anim-d5 { animation-delay:.33s; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+<!-- ── HEADER ── -->
+<header class="anim">
+  <div class="header-tag">Exploratory Data Analysis</div>
+  <h1>Student <span>Performance</span><br>Analysis Report</h1>
+  <p>A comprehensive statistical breakdown of 500 student records — exploring what drives academic success and how performance factors interact.</p>
+  <div class="header-meta">
+    <span>500 Students</span>
+    <span>11 Features</span>
+    <span>Ages 15–19</span>
+    <span>Clean Dataset (1 partial column)</span>
+    <span>June 2025</span>
+  </div>
+</header>
+
+<!-- ── SECTION 1: KEY METRICS ── -->
+<section class="anim anim-d1">
+  <div class="section-label"><span class="section-num">01</span> Dataset at a Glance</div>
+  <div class="kpi-grid">
+    <div class="kpi-card" style="--accent-color:#f0a500">
+      <div class="kpi-label">Total Students</div>
+      <div class="kpi-value" id="kpi1">500</div>
+      <div class="kpi-sub">11 features per record</div>
+    </div>
+    <div class="kpi-card" style="--accent-color:#3ecf6e">
+      <div class="kpi-label">Overall Pass Rate</div>
+      <div class="kpi-value" id="kpi2">64.6<span style="font-size:28px">%</span></div>
+      <div class="kpi-badge badge-up">↑ 323 students passed</div>
+    </div>
+    <div class="kpi-card" style="--accent-color:#4b8fff">
+      <div class="kpi-label">Avg Final Score</div>
+      <div class="kpi-value" id="kpi3">55.98</div>
+      <div class="kpi-badge badge-down">↓ 7.0 pts from previous</div>
+    </div>
+    <div class="kpi-card" style="--accent-color:#a78bfa">
+      <div class="kpi-label">Avg Study Hours/Week</div>
+      <div class="kpi-value" id="kpi4">15.3</div>
+      <div class="kpi-sub">Range: 2 – 30 hrs/week</div>
+    </div>
+    <div class="kpi-card" style="--accent-color:#f05a5a">
+      <div class="kpi-label">Study–Score Correlation</div>
+      <div class="kpi-value" id="kpi5">0.804</div>
+      <div class="kpi-badge badge-up">Very strong relationship</div>
+    </div>
+    <div class="kpi-card" style="--accent-color:#f0a500">
+      <div class="kpi-label">Avg Attendance Rate</div>
+      <div class="kpi-value" id="kpi6">76.4<span style="font-size:28px">%</span></div>
+      <div class="kpi-sub">Range: 50.2% – 100%</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 2: STUDENT PROFILE ── -->
+<section class="anim anim-d2">
+  <div class="section-label"><span class="section-num">02</span> Student Demographics</div>
+  <div class="chart-grid-3">
+
+    <div class="chart-card">
+      <div class="chart-title">Pass vs Fail</div>
+      <div class="chart-subtitle">323 passed · 177 failed</div>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="chartPassFail"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Gender Distribution</div>
+      <div class="chart-subtitle">273 female · 227 male</div>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="chartGender"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Age Distribution</div>
+      <div class="chart-subtitle">Students aged 15–19</div>
+      <div class="chart-wrap" style="height:220px">
+        <canvas id="chartAge"></canvas>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── SECTION 3: SCORE DISTRIBUTION ── -->
+<section class="anim anim-d2">
+  <div class="section-label"><span class="section-num">03</span> Score Analysis</div>
+  <div class="chart-grid-2">
+
+    <div class="chart-card">
+      <div class="chart-title">Final Score Distribution</div>
+      <div class="chart-subtitle">How final scores spread across all 500 students</div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartFinalDist"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Previous vs Final Score Distribution</div>
+      <div class="chart-subtitle">Comparing two assessments — notable downward shift</div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartScoreCompare"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="margin-top:22px">
+    <div class="chart-card">
+      <div class="chart-title">Score Change Distribution (Final − Previous)</div>
+      <div class="chart-subtitle">61.6% of students scored lower on final vs previous assessment</div>
+      <div class="chart-wrap" style="height:230px">
+        <canvas id="chartScoreChange"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 4: STUDY HOURS ── -->
+<section class="anim anim-d3">
+  <div class="section-label"><span class="section-num">04</span> Study Hours — The Dominant Factor</div>
+  <div class="chart-grid-2">
+
+    <div class="chart-card">
+      <div class="chart-title">Average Final Score by Study Hours/Week</div>
+      <div class="chart-subtitle">Clear linear growth — more hours = higher score</div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartStudyScore"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Pass Rate by Study Hours/Week</div>
+      <div class="chart-subtitle">26–30 hrs/week: 100% pass rate · 1–5 hrs: only 18.8%</div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartStudyPass"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Detailed table -->
+  <div class="chart-card" style="margin-top:22px">
+    <div class="chart-title">Study Hours Breakdown Table</div>
+    <div class="chart-subtitle">Complete breakdown by study hours bracket</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Study Hours/Week</th>
+            <th>Students</th>
+            <th>Avg Final Score</th>
+            <th>Score (visual)</th>
+            <th>Pass Rate</th>
+          </tr>
+        </thead>
+        <tbody id="studyTable"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 5: ATTENDANCE ── -->
+<section class="anim anim-d3">
+  <div class="section-label"><span class="section-num">05</span> Attendance Rate Impact</div>
+  <div class="chart-grid-2">
+
+    <div class="chart-card">
+      <div class="chart-title">Avg Final Score by Attendance Range</div>
+      <div class="chart-subtitle">Higher attendance consistently links to better scores</div>
+      <div class="chart-wrap" style="height:250px">
+        <canvas id="chartAttScore"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Pass Rate by Attendance Range</div>
+      <div class="chart-subtitle">90–100% attendance → 74.5% pass rate</div>
+      <div class="chart-wrap" style="height:250px">
+        <canvas id="chartAttPass"></canvas>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── SECTION 6: CATEGORICAL FACTORS ── -->
+<section class="anim anim-d4">
+  <div class="section-label"><span class="section-num">06</span> Categorical Factor Breakdown</div>
+  <div class="chart-grid-2">
+
+    <div class="chart-card">
+      <div class="chart-title">Pass Rate by Parent Education Level</div>
+      <div class="chart-subtitle">Surprising result: High School parents → highest pass rate (70.5%)</div>
+      <div class="chart-wrap" style="height:250px">
+        <canvas id="chartParentPass"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Pass Rate Comparison Across Factors</div>
+      <div class="chart-subtitle">Gender, internet access, extracurricular activities</div>
+      <div class="chart-wrap" style="height:250px">
+        <canvas id="chartFactorCompare"></canvas>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── SECTION 7: CORRELATIONS ── -->
+<section class="anim anim-d4">
+  <div class="section-label"><span class="section-num">07</span> Correlations with Final Score</div>
+  <div class="chart-card">
+    <div class="chart-title">Feature Correlation to Final Score</div>
+    <div class="chart-subtitle">Pearson correlation coefficients — study hours dominate every other factor</div>
+    <div style="margin-top:24px; max-width:700px">
+      <div class="corr-row">
+        <div class="corr-label">Study Hours/Week</div>
+        <div class="corr-track"><div class="corr-fill" style="width:100%;background:var(--gold)"></div></div>
+        <div class="corr-val" style="color:var(--gold)">+0.804</div>
+      </div>
+      <div class="corr-row">
+        <div class="corr-label">Attendance Rate</div>
+        <div class="corr-track"><div class="corr-fill" style="width:29.9%;background:var(--blue)"></div></div>
+        <div class="corr-val" style="color:var(--blue)">+0.241</div>
+      </div>
+      <div class="corr-row">
+        <div class="corr-label">Previous Score</div>
+        <div class="corr-track"><div class="corr-fill" style="width:20.5%;background:var(--purple)"></div></div>
+        <div class="corr-val" style="color:var(--purple)">+0.165</div>
+      </div>
+      <div class="corr-row">
+        <div class="corr-label">Age</div>
+        <div class="corr-track"><div class="corr-fill" style="width:6%;background:var(--red);opacity:.7"></div></div>
+        <div class="corr-val" style="color:var(--red)">−0.048</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SECTION 8: KEY INSIGHTS ── -->
+<section class="anim anim-d5">
+  <div class="section-label"><span class="section-num">08</span> Key Findings &amp; Insights</div>
+  <div class="insight-grid">
+    <div class="insight-card">
+      <div class="insight-icon">📚</div>
+      <div class="insight-body">
+        <h4>Study Hours is the #1 Predictor</h4>
+        <p>With a Pearson correlation of <strong>r = 0.804</strong>, study hours/week is by far the strongest predictor of final score. No other variable comes close.</p>
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon">🏆</div>
+      <div class="insight-body">
+        <h4>26–30 hrs/week → 100% Pass Rate</h4>
+        <p>Students studying <strong>26–30 hours per week</strong> achieved a perfect pass rate. Students studying <strong>1–5 hrs/week</strong> passed only <strong>18.8%</strong> of the time.</p>
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon">📉</div>
+      <div class="insight-body">
+        <h4>Most Students Scored Lower on Final</h4>
+        <p><strong>61.6% of students (308 out of 500)</strong> scored lower on their final than their previous assessment. Average score dropped by <strong>7 points</strong>.</p>
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon">🎓</div>
+      <div class="insight-body">
+        <h4>High School Parent Education Wins</h4>
+        <p>Surprisingly, students whose parents hold a <strong>High School education have the highest pass rate (70.5%)</strong>, beating Bachelor's (53.6%), Master's, and PhD holders.</p>
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon">🌐</div>
+      <div class="insight-body">
+        <h4>Internet Access Has Minimal Impact</h4>
+        <p>Pass rate with internet: <strong>65.7%</strong> vs without: <strong>63.4%</strong>. Only a <strong>2.3-point difference</strong> — internet access alone does not explain academic performance.</p>
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon">⚽</div>
+      <div class="insight-body">
+        <h4>Extracurricular Activities Slightly Help</h4>
+        <p>Students with extracurricular: <strong>66.0%</strong> pass rate vs <strong>63.2%</strong> without. A small but positive correlation — activities may build discipline or morale.</p>
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon">📊</div>
+      <div class="insight-body">
+        <h4>Attendance Matters — But Less Than Study</h4>
+        <p>Attendance correlation with final score: <strong>r = 0.241</strong>. Students with <strong>90–100% attendance</strong> had a 74.5% pass rate vs 54.9% for 50–60% attendance.</p>
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-icon">⚖️</div>
+      <div class="insight-body">
+        <h4>Gender Gap is Minimal</h4>
+        <p>Male students averaged <strong>56.5</strong> final score and <strong>65.6%</strong> pass rate; females averaged <strong>55.5</strong> and <strong>63.7%</strong>. Differences are statistically small.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Student Performance Analysis Report · 500 records · Generated automatically from student_performance.csv
+</footer>
+
+</div><!-- /wrapper -->
+
+<script>
+// ── Chart defaults ──
+Chart.defaults.color = '#7a8aaa';
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+Chart.defaults.font.size = 12;
+
+const GOLD   = '#f0a500';
+const BLUE   = '#4b8fff';
+const GREEN  = '#3ecf6e';
+const RED    = '#f05a5a';
+const PURPLE = '#a78bfa';
+const TEAL   = '#2dd4bf';
+
+function alphaColor(hex, alpha) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+const gridOpts = {
+  color: 'rgba(36,48,80,0.7)',
+  drawBorder: false,
+};
+const tickOpts = { color: '#7a8aaa', padding: 8 };
+const tooltipOpts = {
+  backgroundColor: '#19213b',
+  borderColor: '#243050',
+  borderWidth: 1,
+  titleColor: '#dde4f0',
+  bodyColor: '#7a8aaa',
+  padding: 12,
+  cornerRadius: 8,
+};
+
+// ── 1. Pass / Fail Donut ──
+new Chart(document.getElementById('chartPassFail'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Passed','Failed'],
+    datasets: [{
+      data: [323, 177],
+      backgroundColor: [alphaColor(GREEN,.85), alphaColor(RED,.75)],
+      borderColor: ['#0b0f1a','#0b0f1a'],
+      borderWidth: 3,
+      hoverOffset: 6,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '68%',
+    plugins: {
+      legend: { position: 'bottom', labels: { padding:18, usePointStyle:true, pointStyle:'circle' } },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} (${(ctx.raw/500*100).toFixed(1)}%)` }, ...tooltipOpts },
+    }
+  }
+});
+
+// ── 2. Gender Donut ──
+new Chart(document.getElementById('chartGender'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Female','Male'],
+    datasets: [{
+      data: [273, 227],
+      backgroundColor: [alphaColor(PURPLE,.85), alphaColor(BLUE,.8)],
+      borderColor: ['#0b0f1a','#0b0f1a'],
+      borderWidth: 3,
+      hoverOffset: 6,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '68%',
+    plugins: {
+      legend: { position: 'bottom', labels: { padding:18, usePointStyle:true, pointStyle:'circle' } },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} (${(ctx.raw/500*100).toFixed(1)}%)` }, ...tooltipOpts },
+    }
+  }
+});
+
+// ── 3. Age Distribution ──
+new Chart(document.getElementById('chartAge'), {
+  type: 'bar',
+  data: {
+    labels: ['15','16','17','18','19'],
+    datasets: [{
+      label: 'Students',
+      data: [108, 93, 103, 94, 102],
+      backgroundColor: [GOLD, BLUE, GREEN, PURPLE, TEAL].map(c => alphaColor(c,.75)),
+      borderColor: [GOLD, BLUE, GREEN, PURPLE, TEAL],
+      borderWidth: 1.5,
+      borderRadius: 6,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend:{display:false}, tooltip:{...tooltipOpts} },
+    scales: {
+      x: { grid:{...gridOpts,display:false}, ticks: tickOpts },
+      y: { grid: gridOpts, ticks: tickOpts, beginAtZero:true }
+    }
+  }
+});
+
+// ── 4. Final Score Distribution ──
+new Chart(document.getElementById('chartFinalDist'), {
+  type: 'bar',
+  data: {
+    labels: ['20–29','30–39','40–49','50–59','60–69','70–79','80–89','90–100'],
+    datasets: [{
+      label: 'Students',
+      data: [27, 43, 107, 112, 96, 88, 23, 4],
+      backgroundColor: [27,43,107,112,96,88,23,4].map(v => {
+        const t = v/112;
+        return `rgba(75,${Math.round(100+143*t)},255,${0.5+0.4*t})`;
+      }),
+      borderRadius: 6,
+      borderWidth: 0,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend:{display:false}, tooltip:{...tooltipOpts} },
+    scales: {
+      x: { grid:{...gridOpts,display:false}, ticks: tickOpts },
+      y: { grid: gridOpts, ticks: tickOpts, beginAtZero:true }
+    }
+  }
+});
+
+// ── 5. Previous vs Final Score Distribution ──
+new Chart(document.getElementById('chartScoreCompare'), {
+  type: 'bar',
+  data: {
+    labels: ['20–29','30–39','40–49','50–59','60–69','70–79','80–89','90–100'],
+    datasets: [
+      {
+        label: 'Previous Score',
+        data: [0, 69, 77, 77, 80, 74, 73, 50],
+        backgroundColor: alphaColor(PURPLE,.6),
+        borderColor: PURPLE,
+        borderWidth: 1.5,
+        borderRadius: 4,
+      },
+      {
+        label: 'Final Score',
+        data: [27, 43, 107, 112, 96, 88, 23, 4],
+        backgroundColor: alphaColor(GOLD,.6),
+        borderColor: GOLD,
+        borderWidth: 1.5,
+        borderRadius: 4,
+      }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position:'top', align:'end', labels:{usePointStyle:true, pointStyle:'circle', padding:16} },
+      tooltip: { ...tooltipOpts }
+    },
+    scales: {
+      x: { grid:{...gridOpts,display:false}, ticks: tickOpts },
+      y: { grid: gridOpts, ticks: tickOpts, beginAtZero:true }
+    }
+  }
+});
+
+// ── 6. Score Change Distribution ──
+new Chart(document.getElementById('chartScoreChange'), {
+  type: 'bar',
+  data: {
+    labels: ['-70 to -40','-40 to -20','-20 to -10','-10 to 0','0 to +10','+10 to +20','+20 to +40'],
+    datasets: [{
+      label: 'Students',
+      data: [33, 122, 86, 75, 71, 53, 54],
+      backgroundColor: [RED, RED, RED, RED, GREEN, GREEN, GREEN].map(c => alphaColor(c,.7)),
+      borderColor:     [RED, RED, RED, RED, GREEN, GREEN, GREEN],
+      borderWidth: 1.5,
+      borderRadius: 5,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend:{display:false}, tooltip:{...tooltipOpts} },
+    scales: {
+      x: { grid:{...gridOpts,display:false}, ticks: {...tickOpts, maxRotation:30} },
+      y: { grid: gridOpts, ticks: tickOpts, beginAtZero:true }
+    }
+  }
+});
+
+// ── 7. Study Hours vs Avg Score ──
+new Chart(document.getElementById('chartStudyScore'), {
+  type: 'bar',
+  data: {
+    labels: ['1–5 hrs','6–10 hrs','11–15 hrs','16–20 hrs','21–25 hrs','26–30 hrs'],
+    datasets: [{
+      label: 'Avg Final Score',
+      data: [39.1, 45.8, 51.6, 59.9, 67.6, 73.8],
+      backgroundColor: ['1–5','6–10','11–15','16–20','21–25','26–30'].map((_,i) => {
+        const t = i/5;
+        return `rgba(${Math.round(240-180*t)},${Math.round(165+50*t)},${Math.round(0+255*t)},0.75)`;
+      }),
+      borderRadius: 8,
+      borderWidth: 0,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend:{display:false},
+      tooltip: { callbacks: { label: ctx => ` Avg Score: ${ctx.raw}` }, ...tooltipOpts }
+    },
+    scales: {
+      x: { grid:{...gridOpts,display:false}, ticks: tickOpts },
+      y: { grid: gridOpts, ticks: tickOpts, beginAtZero:true, suggestedMax:90 }
+    }
+  }
+});
+
+// ── 8. Study Hours vs Pass Rate ──
+new Chart(document.getElementById('chartStudyPass'), {
+  type: 'line',
+  data: {
+    labels: ['1–5 hrs','6–10 hrs','11–15 hrs','16–20 hrs','21–25 hrs','26–30 hrs'],
+    datasets: [{
+      label: 'Pass Rate %',
+      data: [18.8, 33.0, 60.8, 84.8, 97.8, 100.0],
+      borderColor: GREEN,
+      backgroundColor: alphaColor(GREEN,.1),
+      pointBackgroundColor: GREEN,
+      pointRadius: 6,
+      pointHoverRadius: 8,
+      fill: true,
+      tension: 0.4,
+      borderWidth: 2.5,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend:{display:false},
+      tooltip: { callbacks: { label: ctx => ` Pass Rate: ${ctx.raw}%` }, ...tooltipOpts }
+    },
+    scales: {
+      x: { grid:{...gridOpts,display:false}, ticks: tickOpts },
+      y: { grid: gridOpts, ticks:{...tickOpts, callback:v=>v+'%'}, beginAtZero:true, max:110 }
+    }
+  }
+});
+
+// ── Study Hours Table ──
+const studyData = [
+  {range:'1–5 hrs', n:85, score:39.1, pass:18.8},
+  {range:'6–10 hrs', n:97, score:45.8, pass:33.0},
+  {range:'11–15 hrs', n:79, score:51.6, pass:60.8},
+  {range:'16–20 hrs', n:66, score:59.9, pass:84.8},
+  {range:'21–25 hrs', n:92, score:67.6, pass:97.8},
+  {range:'26–30 hrs', n:81, score:73.8, pass:100.0},
+];
+const tbody = document.getElementById('studyTable');
+studyData.forEach(d => {
+  const passColor = d.pass >= 80 ? '#3ecf6e' : d.pass >= 50 ? '#f0a500' : '#f05a5a';
+  tbody.innerHTML += `
+    <tr>
+      <td style="font-weight:600;color:var(--text)">${d.range}</td>
+      <td>${d.n}</td>
+      <td style="font-family:'DM Mono',monospace;color:var(--text)">${d.score}</td>
+      <td>
+        <div class="bar-cell">
+          <div class="mini-bar" style="width:${d.score/90*180}px;background:var(--gold)"></div>
+          <span style="font-size:11px;color:var(--muted)">${d.score}/100</span>
+        </div>
+      </td>
+      <td><span class="pass-pill" style="background:${passColor}22;color:${passColor}">${d.pass}%</span></td>
+    </tr>`;
+});
+
+// ── 9. Attendance Score ──
+new Chart(document.getElementById('chartAttScore'), {
+  type: 'bar',
+  data: {
+    labels: ['50–60%','60–70%','70–80%','80–90%','90–100%'],
+    datasets: [{
+      label: 'Avg Final Score',
+      data: [49.8, 52.9, 57.1, 57.6, 60.6],
+      backgroundColor: ['50–60%','60–70%','70–80%','80–90%','90–100%'].map((_,i)=>{
+        const t = i/4;
+        return `rgba(75,${Math.round(100+143*t)},255,${0.5+0.4*t})`;
+      }),
+      borderRadius: 8, borderWidth:0,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {legend:{display:false}, tooltip:{...tooltipOpts}},
+    scales: {
+      x: { grid:{...gridOpts,display:false}, ticks:tickOpts },
+      y: { grid:gridOpts, ticks:tickOpts, beginAtZero:false, suggestedMin:40, suggestedMax:70 }
+    }
+  }
+});
+
+// ── 10. Attendance Pass Rate ──
+new Chart(document.getElementById('chartAttPass'), {
+  type: 'line',
+  data: {
+    labels: ['50–60%','60–70%','70–80%','80–90%','90–100%'],
+    datasets: [{
+      label: 'Pass Rate %',
+      data: [54.9, 54.8, 69.5, 65.8, 74.5],
+      borderColor: TEAL,
+      backgroundColor: alphaColor(TEAL,.1),
+      pointBackgroundColor: TEAL,
+      pointRadius: 6,
+      pointHoverRadius: 8,
+      fill: true,
+      tension: 0.35,
+      borderWidth: 2.5,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {legend:{display:false}, tooltip:{callbacks:{label:ctx=>` Pass Rate: ${ctx.raw}%`},...tooltipOpts}},
+    scales: {
+      x: { grid:{...gridOpts,display:false}, ticks:tickOpts },
+      y: { grid:gridOpts, ticks:{...tickOpts,callback:v=>v+'%'}, beginAtZero:false, suggestedMin:40, max:90 }
+    }
+  }
+});
+
+// ── 11. Parent Education Pass Rate ──
+new Chart(document.getElementById('chartParentPass'), {
+  type: 'bar',
+  data: {
+    labels: ['High School','Master','PhD','Bachelor'],
+    datasets: [{
+      label: 'Pass Rate %',
+      data: [70.5, 67.0, 64.8, 53.6],
+      backgroundColor: [GREEN, TEAL, BLUE, RED].map(c => alphaColor(c,.75)),
+      borderColor: [GREEN, TEAL, BLUE, RED],
+      borderWidth: 1.5,
+      borderRadius: 8,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend:{display:false},
+      tooltip: { callbacks:{label:ctx=>` Pass Rate: ${ctx.raw}%`}, ...tooltipOpts }
+    },
+    scales: {
+      x: { grid:gridOpts, ticks:{...tickOpts,callback:v=>v+'%'}, beginAtZero:true, max:85 },
+      y: { grid:{display:false}, ticks:tickOpts }
+    }
+  }
+});
+
+// ── 12. Factor Compare (grouped bars) ──
+new Chart(document.getElementById('chartFactorCompare'), {
+  type: 'bar',
+  data: {
+    labels: ['Female','Male','No Internet','Has Internet','No Extracurr','Has Extracurr'],
+    datasets: [{
+      label: 'Pass Rate %',
+      data: [63.7, 65.6, 63.4, 65.7, 63.2, 66.0],
+      backgroundColor: [
+        alphaColor(PURPLE,.7),alphaColor(BLUE,.7),
+        alphaColor(RED,.6),alphaColor(GREEN,.7),
+        alphaColor(GOLD,.6),alphaColor(TEAL,.7)
+      ],
+      borderRadius: 8,
+      borderWidth: 0,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend:{display:false},
+      tooltip:{callbacks:{label:ctx=>` Pass Rate: ${ctx.raw}%`},...tooltipOpts}
+    },
+    scales: {
+      x: { grid:{...gridOpts,display:false}, ticks:{...tickOpts, maxRotation:30} },
+      y: { grid:gridOpts, ticks:{...tickOpts,callback:v=>v+'%'}, beginAtZero:false, suggestedMin:50, max:80 }
+    }
+  }
+});
+</script>
+</body>
+</html>
